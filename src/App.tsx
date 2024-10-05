@@ -1,33 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { TreeView } from './components'
+import { TreeNode } from './components/logic';
+
+const treeDataSample: TreeNode[] = [
+  new TreeNode({ id: 1, title: 'Root Item 1', position: 1, canHaveParent: false }),
+  new TreeNode({ id: 2, title: 'Root Item 2', position: 2, canHaveParent: false }),
+  new TreeNode({ id: 3, title: 'Child Item 1 of Root 1 id 3', position: 1, parentId: 1, canHaveChildren: false }),
+  new TreeNode({ id: 4, title: 'Child Item 2 of Root 1 id 4', position: 2, parentId: 1, canHaveChildren: false }),
+  new TreeNode({ id: 5, title: 'Child Item 1 of Root 2 id 5', position: 1, parentId: 2, canHaveChildren: false }),
+  new TreeNode({ id: 6, title: 'Branch Item 3 id 6', position: 2, parentId: 1 }),
+  new TreeNode({ id: 7, title: 'Child Item 1 of Branch 3 id 7', position: 1, parentId: 6, canHaveChildren: false }),
+];
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Test dragable tree</h1>
+      <TreeView items={treeDataSample} onRenderItem={(node) => <div>{node.title}</div>}/>
     </>
   )
 }
