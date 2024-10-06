@@ -14,7 +14,7 @@ const treeDataSample: TreeNode[] = [
 function App() {
   return (
     <>
-      <h1>Test dragable tree</h1>
+      <h1>Test draggable tree</h1>
       <TreeView items={treeDataSample} onRenderItem={(node) => <div>{node.title}</div>}/>
     </>
   )

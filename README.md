@@ -32,7 +32,7 @@ const treeDataSample: TreeNode[] = [
 function App() {
   return (
     <>
-      <h1>Dragable tree</h1>
+      <h1>Draggable tree</h1>
       <TreeView items={treeDataSample} onRenderItem={(node) => <div>{node.title}</div>}/>
     </>
   )
