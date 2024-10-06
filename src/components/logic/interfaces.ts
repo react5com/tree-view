@@ -1,24 +1,24 @@
 export type IdType = string | number;
 
-export interface ITreeNode {
+export interface ITreeNode<T = unknown> {
   id: IdType;
   title?: string;
   position?: number;
   parentId?: IdType | null;
   canHaveParent?: boolean;
   canHaveChildren?: boolean;
-  isPlaceholder?: boolean;
+  data?: T;
 }
-export class TreeNode implements ITreeNode {
+export class TreeNode<T = unknown> implements ITreeNode<T> {
   public id: IdType = 0;
   public title?: string;
   public position?: number;
   public parentId?: IdType | null = null;
   public canHaveParent?: boolean = true;
   public canHaveChildren?: boolean = true;
-  public isPlaceholder?: boolean = false;
+  public data?: T;
 
-  constructor(copy: ITreeNode) {
+  constructor(copy: ITreeNode<T>) {
     this.id = copy.id;
     this.title = copy.title;
     this.position = copy.position;
@@ -27,7 +27,6 @@ export class TreeNode implements ITreeNode {
       this.canHaveParent = copy.canHaveParent;
     if(typeof(copy.canHaveChildren) !== "undefined")
       this.canHaveChildren = copy.canHaveChildren;
-    if(typeof(copy.isPlaceholder) !== "undefined")
-      this.isPlaceholder = copy.isPlaceholder;
+    this.data = copy.data;
   }
 }

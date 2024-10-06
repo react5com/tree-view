@@ -1,32 +1,32 @@
 import { IdType, TreeNode } from "./interfaces";
 
-export function findItemById(treeData: TreeNode[], id?: IdType | null) {
+export function findItemById<T>(treeData: TreeNode<T>[], id?: IdType | null) {
   if(isNullOrUndefined(id)) return null;
   return treeData.find(n => n.id === id);
 }
 export function isNullOrUndefined(v: unknown) {
   return v === null || typeof(v) === "undefined";
 }
-export function findChildren(treeData: TreeNode[], parentId?: IdType | null) {
+export function findChildren<T>(treeData: TreeNode<T>[], parentId?: IdType | null) {
   return treeData.filter((n) => {
     return (isNullOrUndefined(parentId) 
       && isNullOrUndefined(n.parentId)) || (n.parentId === parentId)
   });
 }
-function getMaxPosition(treeData: TreeNode[], parentId?: IdType | null) {
+function getMaxPosition<T>(treeData: TreeNode<T>[], parentId?: IdType | null) {
   return Math.max(
     ...findChildren(treeData, parentId).map(node => node.position || 0),
     0
   );
 }
-function getAllExcept(treeData: TreeNode[], item: TreeNode) {
+function getAllExcept<T>(treeData: TreeNode<T>[], item: TreeNode<T>) {
   return treeData.filter(node => node.id !== item.id);
 }
-export function repositionItems(treeData: TreeNode[], 
-  item: TreeNode, itemTo: TreeNode | null): TreeNode[] {
+export function repositionItems<T>(treeData: TreeNode<T>[], 
+  item: TreeNode<T>, itemTo: TreeNode<T> | null): TreeNode<T>[] {
   // put item before itemTo,
   // if itemTo is null then send item to the end of the top layer
-  console.log("reposition", item, itemTo)
+  //console.log("reposition", item, itemTo)
 
   if(item === itemTo) return treeData;
   if(!item.canHaveParent && itemTo?.parentId) return treeData;

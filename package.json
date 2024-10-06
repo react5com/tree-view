@@ -1,11 +1,22 @@
 {
-  "name": "dragable-tree-view",
-  "private": true,
-  "version": "0.0.0",
+  "name": "draggable-tree-view",
+  "private": false,
+  "version": "0.1.5",
   "type": "module",
   "author": {
-    "name": "Alexander Fedorenko"
+    "name": "Alexander Fedorenko",
+    "url": "https://github.com/alfed7"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfed7/draggable-tree-view.git"
+  },
+  "files": ["dist"],
+  "main": "dist/draggable-tree-view.umd.js",
+  "module": "dist/draggable-tree-view.js",
+  "browser": "dist/draggable-tree-view.umd.js",
+  "types": "dist/types/draggable-tree-view.d.ts",
+  "style": "dist/style.css",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -39,6 +50,7 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.2.3"
   }
 }

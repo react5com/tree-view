@@ -1,50 +1,48 @@
-# React + TypeScript + Vite
+# Simple tree view component in React + TypeScript
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple and customizable Tree View React component. It supports items reordering and moving between tree branches with drag-n-drop. 
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+# Using Yarn
+npm i draggable-tree-view --save
+```
+or
+```
+# Using Npm
+yarn add draggable-tree-view
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+## Sample
 ```
+import { TreeView, TreeNode } from "draggable-tree-view"
+import 'draggable-tree-view/dist/style.css';
+
+const treeDataSample: TreeNode[] = [
+  new TreeNode({ id: 1, title: 'Root Item 1', position: 1, canHaveParent: false }),
+  new TreeNode({ id: 2, title: 'Root Item 2', position: 2, canHaveParent: false }),
+  new TreeNode({ id: 3, title: 'Child Item 1 of Root 1 id 3', position: 1, parentId: 1, canHaveChildren: false }),
+  new TreeNode({ id: 4, title: 'Child Item 2 of Root 1 id 4', position: 2, parentId: 1, canHaveChildren: false }),
+  new TreeNode({ id: 5, title: 'Child Item 1 of Root 2 id 5', position: 1, parentId: 2, canHaveChildren: false }),
+  new TreeNode({ id: 6, title: 'Branch Item 3 id 6', position: 2, parentId: 1 }),
+  new TreeNode({ id: 7, title: 'Child Item 1 of Branch 3 id 7', position: 1, parentId: 6, canHaveChildren: false }),
+];
+
+function App() {
+  return (
+    <>
+      <h1>Dragable tree</h1>
+      <TreeView items={treeDataSample} onRenderItem={(node) => <div>{node.title}</div>}/>
+    </>
+  )
+}
+```
+
+## License
+
+This project is licensed under the MIT License. For more information, see the [LICENSE](LICENSE) file.
+
+## Support
+
+For support and bug reports, please [open an issue](https://github.com/alfed7/draggable-tree-view/issues) on GitHub.

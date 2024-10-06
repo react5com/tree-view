@@ -1,6 +1,5 @@
 import './App.css'
-import { TreeView } from './components'
-import { TreeNode } from './components/logic';
+import { TreeView, TreeNode } from './components'
 
 const treeDataSample: TreeNode[] = [
   new TreeNode({ id: 1, title: 'Root Item 1', position: 1, canHaveParent: false }),

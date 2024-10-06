@@ -31,7 +31,7 @@ export const TreeView = (props: ITreeViewProps) => {
     if(!draggedNode) return;
     const updatedData = repositionItems(treeData, draggedNode, targetNode || null)
     setTreeData(updatedData);
-    console.log(updatedData)
+    //console.log(updatedData)
     const updatedNode = findItemById(treeData, draggedNodeId);
     if(props.onNodeUpdated && updatedNode) props.onNodeUpdated(updatedNode);
     if(props.onPositionsUpdated) props.onPositionsUpdated(updatedData);

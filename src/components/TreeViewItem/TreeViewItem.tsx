@@ -3,28 +3,28 @@ import { findChildren, IdType, TreeNode } from "../logic";
 import clsx from "clsx";
 import "./TreeViewItem.css"
 
-interface ITreeViewItemProps {
+interface ITreeViewItemProps<T = unknown> {
   className?: string;
-  node: TreeNode | null;
-  treeData?: TreeNode[];
-  childNodes?: TreeNode[];
+  node: TreeNode<T> | null;
+  treeData?: TreeNode<T>[];
+  childNodes?: TreeNode<T>[];
   draggedNodeId: IdType | null;
   targetNodeId: IdType | null;
   setDraggedNodeId: (nodeId: IdType | null) => void;
   setTargetNodeId: (nodeId: IdType | null) => void;
   level: number;
-  onCompleteMove: (node?: TreeNode) => void;
-  onRenderItem?: (node: TreeNode, level: number) => ReactNode;
+  onCompleteMove: (node?: TreeNode<T>) => void;
+  onRenderItem?: (node: TreeNode<T>, level: number) => ReactNode;
 }
 function calculateLevelPadding(level: number) {
   return 2*level;
 }
-export const TreeViewItem = (props: ITreeViewItemProps) => {
+export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
   const [isDraggingOverBranch, setIsDraggingOverBranch] = useState(false);
   const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const thisPlaceholder = useMemo(() => (new TreeNode({
-    id: `pl${props.node?.id || 0}`, parentId: props.node?.id || null, isPlaceholder: true})),
+  const thisPlaceholder = useMemo(() => (new TreeNode<T>({
+    id: `pl${props.node?.id || 0}`, parentId: props.node?.id || null})),
     [props.node])
 
   useEffect(() => {
@@ -39,18 +39,18 @@ export const TreeViewItem = (props: ITreeViewItemProps) => {
       placeholderTimeoutRef.current = null;
     }
   }
-  const isDraggedNode = (node?: TreeNode) => {
+  const isDraggedNode = (node?: TreeNode<T>) => {
     return props.draggedNodeId === node?.id;
   }
-  const isTargetNode = (node?: TreeNode) => {
+  const isTargetNode = (node?: TreeNode<T>) => {
     return node && props.targetNodeId === node.id && !isDraggedNode(node);
   }
 
-  const handleDragStart = (node?: TreeNode) => () => {
+  const handleDragStart = (node?: TreeNode<T>) => () => {
     props.setDraggedNodeId(node?.id || null)
-    console.log("dragStart", node?.id)
+    //console.log("dragStart", node?.id)
   }
-  const handleDragOver = (node?: TreeNode) => (e: DragEvent<HTMLElement>) => {
+  const handleDragOver = (node?: TreeNode<T>) => (e: DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     
@@ -67,7 +67,7 @@ export const TreeViewItem = (props: ITreeViewItemProps) => {
     }
   }
   const delayedResetIsDraggingOverBranch = () => {
-    console.log("delayedResetIsDraggingOverBranch", placeholderTimeoutRef.current)
+    //console.log("delayedResetIsDraggingOverBranch", placeholderTimeoutRef.current)
     clearPlaceholderTimeout();
     placeholderTimeoutRef.current = setTimeout(() => {
       setIsDraggingOverBranch(false);
@@ -75,7 +75,7 @@ export const TreeViewItem = (props: ITreeViewItemProps) => {
   }
   const handleDragLeave = (e: DragEvent<HTMLElement>) => {
     e.preventDefault();
-    console.log("handleDragLeave", props.targetNodeId)
+    //console.log("handleDragLeave", props.targetNodeId)
     props.setTargetNodeId(null)
     if(isDraggingOverBranch)
       delayedResetIsDraggingOverBranch();
@@ -85,15 +85,15 @@ export const TreeViewItem = (props: ITreeViewItemProps) => {
     props.setDraggedNodeId(null);
     props.setTargetNodeId(null);
     setIsDraggingOverBranch(false);
-    console.log("dragEnd")
+    //console.log("dragEnd")
   }
-  const handleDrop = (node?: TreeNode) => (e: DragEvent<HTMLElement>) => {
+  const handleDrop = (node?: TreeNode<T>) => (e: DragEvent<HTMLElement>) => {
     e.preventDefault();
     props.onCompleteMove(node);
     props.setDraggedNodeId(null);
     props.setTargetNodeId(null);
     setIsDraggingOverBranch(false);
-    console.log("drop")
+    //console.log("drop")
   }
 
   return (
