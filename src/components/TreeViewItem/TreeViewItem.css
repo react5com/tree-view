@@ -1,5 +1,4 @@
 .draggable-tree-item {
-  margin: 10px;
   display: flex;
 }
 .draggable-tree-item[draggable=true] {

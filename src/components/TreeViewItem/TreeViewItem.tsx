@@ -15,10 +15,9 @@ interface ITreeViewItemProps<T = unknown> {
   level: number;
   onCompleteMove: (node?: TreeNode<T>) => void;
   onRenderItem?: (node: TreeNode<T>, level: number) => ReactNode;
+  onCalculateLevelPadding?: (level: number) => string;
 }
-function calculateLevelPadding(level: number) {
-  return 2*level;
-}
+
 export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
   const [isDraggingOverBranch, setIsDraggingOverBranch] = useState(false);
   const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -33,6 +32,11 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
     };
   }, []);
 
+  function calculateLevelPadding(level: number) {
+    if(props.onCalculateLevelPadding) 
+      return props.onCalculateLevelPadding(level);
+    return `${level}em`;
+  }
   const clearPlaceholderTimeout = () => {
     if (placeholderTimeoutRef.current) {
       clearTimeout(placeholderTimeoutRef.current);
