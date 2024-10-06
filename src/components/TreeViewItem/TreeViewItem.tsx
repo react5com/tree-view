@@ -141,7 +141,7 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
           className={clsx('draggable-tree-item draggable-tree-item__placeholder',
             isTargetNode(thisPlaceholder) && "draggable-tree-item__target",
             props.className)}
-          style={{marginLeft: `${calculateLevelPadding(props.level+1)}em`}}
+          style={{marginLeft: calculateLevelPadding(props.level+1)}}
           draggable={false}
           onDragOver={handleDragOver(thisPlaceholder)}
           onDragLeave={handleDragLeave}
