@@ -2,6 +2,7 @@ import { DragEvent, Fragment, ReactNode, useEffect, useMemo, useRef, useState } 
 import { findChildren, IdType, TreeNode } from "../logic";
 import clsx from "clsx";
 import "./TreeViewItem.css"
+import { CheckBox } from "../CheckBox";
 
 interface ITreeViewItemProps<T = unknown> {
   className?: string;
@@ -16,6 +17,8 @@ interface ITreeViewItemProps<T = unknown> {
   onCompleteMove: (node?: TreeNode<T>) => void;
   onRenderItem?: (node: TreeNode<T>, level: number) => ReactNode;
   onCalculateLevelPadding?: (level: number) => string;
+  selectedItems?: IdType[];
+  onSelected?: (id: IdType) => void;
 }
 
 export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
@@ -100,12 +103,16 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
     //console.log("drop")
   }
 
+  const handleSelectedChange = (id: IdType) => () => {
+    if(props.onSelected) props.onSelected(id)
+  }
+  const isSelected = (id: IdType) => props.selectedItems?.includes(id);
   return (
     <Fragment>
       {props.node && <li
         className={clsx('draggable-tree-item', isDraggedNode(props.node) && "draggable-tree-item__dragging",
           isTargetNode(props.node) && "draggable-tree-item__target", props.className)}
-        style={{marginLeft: `${calculateLevelPadding(props.level)}em`}}
+        style={{marginLeft: calculateLevelPadding(props.level)}}
         draggable
         onDragStart={handleDragStart(props.node)}
         onDragOver={handleDragOver(props.node)}
@@ -113,6 +120,12 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop(props.node)}
       >
+        {props.onSelected 
+          && <CheckBox
+                id={`check${props.node.id}`}
+                onChange={handleSelectedChange(props.node.id)}
+                checked={isSelected(props.node.id)}
+              />}
         {props.onRenderItem 
           ? props.onRenderItem(props.node, props.level)
           : <div>{props.node.title}</div>}
@@ -131,6 +144,8 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
             targetNodeId={props.targetNodeId}
             setDraggedNodeId={props.setDraggedNodeId}
             setTargetNodeId={props.setTargetNodeId}
+            selectedItems={props.selectedItems}
+            onSelected={props.onSelected}
             onRenderItem={props.onRenderItem}
           />
         ))

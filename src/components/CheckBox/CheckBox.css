@@ -1,0 +1,43 @@
+.treeview-checkbox {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin: .5em 1em .5em .5em;
+  cursor: pointer;
+  user-select: none;
+}
+.treeview-checkbox-input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+}
+
+.treeview-checkbox-ui {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #555;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  background-color: white;
+}
+
+/* input[type="checkbox"]:checked + .treeview-checkbox-ui {
+  background-color: green;
+} */
+
+.treeview-checkbox-ui:after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 10px;
+  border: solid black;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  top: 2px;
+  left: 7px;
+  display: none;
+}
+
+input[type="checkbox"]:checked + .treeview-checkbox-ui:after {
+  display: block;
+}

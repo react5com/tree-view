@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css'
 import { TreeView, TreeNode } from './components'
 
@@ -12,10 +13,18 @@ const treeDataSample: TreeNode[] = [
 ];
 
 function App() {
+  const [selectedItems, setSelectedItems] = useState<TreeNode[] | null>(null);
+  console.log("selectedItems", selectedItems);
   return (
     <>
       <h1>Test draggable tree</h1>
-      <TreeView items={treeDataSample} onRenderItem={(node) => <div>{node.title}</div>}/>
+      <TreeView
+        items={treeDataSample}
+        onSelectionChanged={setSelectedItems}
+        onRenderItem={
+          (node) => <div className='tree-view-vcenter'>{node.title}</div>
+        }
+      />
     </>
   )
 }
