@@ -10,8 +10,7 @@ export interface ITreeViewProps<T = unknown> {
   itemClassName?: string;
   items?: TreeNode<T>[];
   onRenderItem?: (node: TreeNode<T>, level: number) => ReactNode;
-  onNodeUpdated?: (updatedNode: TreeNode<T>) => void;
-  onPositionsUpdated?: (items?: TreeNode<T>[]) => void;
+  onPositionsUpdated?: (changedItems: TreeNode<T>[]) => void;
   onSelectionChanged?: (selectedItems: TreeNode<T>[]) => void;
 }
 
@@ -47,12 +46,9 @@ export const TreeView = <T=unknown>(props: ITreeViewProps<T>) => {
   const completeMove = (targetNode?: TreeNode<T>) => {
     const draggedNode = draggedNodeId ? findItemById(treeData, draggedNodeId) : null;
     if(!draggedNode) return;
-    const updatedData = repositionItems(treeData, draggedNode, targetNode || null)
+    const {updatedData, changedItems} = repositionItems(treeData, draggedNode, targetNode || null)
     setTreeData(updatedData);
-    //console.log(updatedData)
-    const updatedNode = findItemById(treeData, draggedNodeId);
-    if(props.onNodeUpdated && updatedNode) props.onNodeUpdated(updatedNode);
-    if(props.onPositionsUpdated) props.onPositionsUpdated(updatedData);
+    if(props.onPositionsUpdated && changedItems) props.onPositionsUpdated(changedItems);
   }
   return (
     <Fragment>

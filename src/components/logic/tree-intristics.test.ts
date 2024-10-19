@@ -18,19 +18,19 @@ function deepCloneList<T>(originalList: T[]) {
 describe('reposition tree items', () => {
   test('reposition top level', () => {
     const treeData = deepCloneList(treeDataSample);
-    const updatedData = repositionItems(treeData, treeData[1],treeData[0])
+    const { updatedData } = repositionItems(treeData, treeData[1],treeData[0])
     expect(findItemById(updatedData, 1)?.position).toBe(2)
     expect(findItemById(updatedData, 2)?.position).toBe(1)
   });
   test('can\'t drop before itself', () => {
     const treeData = deepCloneList(treeDataSample);
-    const updatedData = repositionItems(treeData, treeData[3],treeData[3])
+    const { updatedData } = repositionItems(treeData, treeData[3],treeData[3])
     expect(findItemById(updatedData, 4)?.position).toBe(2)
     expect(findItemById(updatedData, 4)?.parentId).toBe(1)
   });
   test('can\'t drop as a child of itself', () => {
     const treeData = deepCloneList(treeDataSample);
-    const updatedData = repositionItems(treeData, treeData[5],treeData[6])
+    const { updatedData } = repositionItems(treeData, treeData[5],treeData[6])
     expect(findItemById(updatedData, 6)?.parentId).toBe(1)
     expect(findItemById(updatedData, 6)?.position).toBe(2)
     expect(findItemById(updatedData, 7)?.parentId).toBe(6)
@@ -38,7 +38,7 @@ describe('reposition tree items', () => {
   });
   test('reposition children within the same parent node', () => {
     const treeData = deepCloneList(treeDataSample);
-    const updatedData = repositionItems(treeData, treeData[3], treeData[2])
+    const { updatedData } = repositionItems(treeData, treeData[3], treeData[2])
     expect(findItemById(updatedData, 3)?.position).toBe(2)
     expect(findItemById(updatedData, 4)?.position).toBe(1)
   });
@@ -47,7 +47,7 @@ describe('reposition tree items', () => {
     expect(treeData[3].id).toBe(4)
     expect(treeData[3].position).toBe(2)
     expect(treeData[3].parentId).toBe(1)
-    const updatedData = repositionItems(treeData, treeData[4], treeData[3])
+    const { updatedData } = repositionItems(treeData, treeData[4], treeData[3])
     expect(findItemById(updatedData, 5)?.position).toBe(2)
     expect(findItemById(updatedData, 4)?.position).toBe(3)
     expect(findItemById(updatedData, 5)?.parentId).toBe(1)
@@ -55,19 +55,19 @@ describe('reposition tree items', () => {
   });
   test('move child item to the end of the top level', () => {
     const treeData = deepCloneList(treeDataSample);
-    const updatedData = repositionItems(treeData, treeData[4], null)
+    const { updatedData } = repositionItems(treeData, treeData[4], null)
     expect(findItemById(updatedData, 5)?.position).toBe(3)
-    expect(findItemById(updatedData, 5)?.parentId).toBe(null)
+    expect(findItemById(updatedData, 5)?.parentId).toBe(undefined)
   });
   test('move child item to the end of another parent', () => {
     const treeData = deepCloneList(treeDataSample);
-    const updatedData = repositionItems(treeData, treeData[4], {id: '0', parentId: 1})
+    const { updatedData } = repositionItems(treeData, treeData[4], {id: '0', parentId: 1})
     expect(findItemById(updatedData, 5)?.position).toBe(3)
     expect(findItemById(updatedData, 5)?.parentId).toBe(1)
   });
   test('restrict moving as child when canHaveChildren is false', () => {
     const treeData = deepCloneList(treeDataSample);
-    const updatedData = repositionItems(treeData, treeData[0], treeData[4])
+    const { updatedData } = repositionItems(treeData, treeData[0], treeData[4])
     expect(findItemById(updatedData, 1)?.position).toBe(1)
     expect(findItemById(updatedData, 1)?.parentId).toBeUndefined()
     expect(findItemById(updatedData, 5)?.position).toBe(1)
