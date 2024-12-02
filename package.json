@@ -1,7 +1,7 @@
 {
   "name": "draggable-tree-view",
   "private": false,
-  "version": "0.1.16",
+  "version": "0.1.19",
   "type": "module",
   "description": "A simple and customizable tree view for React with drag-n-drop for repositioning.",
   "author": {
