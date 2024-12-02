@@ -21,13 +21,16 @@ interface ITreeViewItemProps<T = unknown> {
   onSelected?: (id: IdType) => void;
 }
 
-export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
+export const TreeViewItem = <T=unknown,>({node, onCalculateLevelPadding,
+  draggedNodeId, targetNodeId, setDraggedNodeId, setTargetNodeId,
+  onCompleteMove, onSelected, selectedItems, className, level,
+  onRenderItem, treeData, childNodes}: ITreeViewItemProps<T>) => {
   const [isDraggingOverBranch, setIsDraggingOverBranch] = useState(false);
   const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const thisPlaceholder = useMemo(() => (new TreeNode<T>({
-    id: `pl${props.node?.id || 0}`, parentId: props.node?.id || null})),
-    [props.node])
+    id: `pl${node?.id || 0}`, parentId: node?.id || null})),
+    [node])
 
   useEffect(() => {
     return () => {
@@ -36,8 +39,8 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
   }, []);
 
   function calculateLevelPadding(level: number) {
-    if(props.onCalculateLevelPadding) 
-      return props.onCalculateLevelPadding(level);
+    if(onCalculateLevelPadding) 
+      return onCalculateLevelPadding(level);
     return `${level}em`;
   }
   const clearPlaceholderTimeout = () => {
@@ -47,14 +50,14 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
     }
   }
   const isDraggedNode = (node?: TreeNode<T>) => {
-    return props.draggedNodeId === node?.id;
+    return draggedNodeId === node?.id;
   }
   const isTargetNode = (node?: TreeNode<T>) => {
-    return node && props.targetNodeId === node.id && !isDraggedNode(node);
+    return node && targetNodeId === node.id && !isDraggedNode(node);
   }
 
   const handleDragStart = (node?: TreeNode<T>) => () => {
-    props.setDraggedNodeId(node?.id || null)
+    setDraggedNodeId(node?.id || null)
     //console.log("dragStart", node?.id)
   }
   const handleDragOver = (node?: TreeNode<T>) => (e: DragEvent<HTMLElement>) => {
@@ -67,9 +70,9 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
     //   e.dataTransfer.dropEffect = 'none';
     // }
     // else {
-      props.setTargetNodeId(node?.id || null)
+      setTargetNodeId(node?.id || null)
     //}
-    if (!isDraggingOverBranch && props.node?.canHaveChildren) {
+    if (!isDraggingOverBranch && node?.canHaveChildren) {
       setIsDraggingOverBranch(true);
     }
   }
@@ -83,80 +86,80 @@ export const TreeViewItem = <T=unknown,>(props: ITreeViewItemProps<T>) => {
   const handleDragLeave = (e: DragEvent<HTMLElement>) => {
     e.preventDefault();
     //console.log("handleDragLeave", props.targetNodeId)
-    props.setTargetNodeId(null)
+    setTargetNodeId(null)
     if(isDraggingOverBranch)
       delayedResetIsDraggingOverBranch();
   }
   const handleDragEnd = (e: DragEvent<HTMLElement>) => {
     e.preventDefault();
-    props.setDraggedNodeId(null);
-    props.setTargetNodeId(null);
+    setDraggedNodeId(null);
+    setTargetNodeId(null);
     setIsDraggingOverBranch(false);
     //console.log("dragEnd")
   }
   const handleDrop = (node?: TreeNode<T>) => (e: DragEvent<HTMLElement>) => {
     e.preventDefault();
-    props.onCompleteMove(node);
-    props.setDraggedNodeId(null);
-    props.setTargetNodeId(null);
+    onCompleteMove(node);
+    setDraggedNodeId(null);
+    setTargetNodeId(null);
     setIsDraggingOverBranch(false);
     //console.log("drop")
   }
 
   const handleSelectedChange = (id: IdType) => () => {
-    if(props.onSelected) props.onSelected(id)
+    if(onSelected) onSelected(id)
   }
-  const isSelected = (id: IdType) => props.selectedItems?.includes(id);
+  const isSelected = (id: IdType) => selectedItems?.includes(id) || false;
   return (
     <Fragment>
-      {props.node && <li
-        className={clsx('draggable-tree-item', isDraggedNode(props.node) && "draggable-tree-item__dragging",
-          isTargetNode(props.node) && "draggable-tree-item__target", props.className)}
-        style={{marginLeft: calculateLevelPadding(props.level)}}
+      {node && <li
+        className={clsx('draggable-tree-item', isDraggedNode(node) && "draggable-tree-item__dragging",
+          isTargetNode(node) && "draggable-tree-item__target", className)}
+        style={{marginLeft: calculateLevelPadding(level)}}
         draggable
-        onDragStart={handleDragStart(props.node)}
-        onDragOver={handleDragOver(props.node)}
+        onDragStart={handleDragStart(node)}
+        onDragOver={handleDragOver(node)}
         onDragEnd={handleDragEnd}
         onDragLeave={handleDragLeave}
-        onDrop={handleDrop(props.node)}
+        onDrop={handleDrop(node)}
       >
-        {props.onSelected 
+        {onSelected 
           && <CheckBox
-                id={`check${props.node.id}`}
-                onChange={handleSelectedChange(props.node.id)}
-                checked={isSelected(props.node.id)}
+                id={`check${node.id}`}
+                onChange={handleSelectedChange(node.id)}
+                checked={isSelected(node.id)}
               />}
-        {props.onRenderItem 
-          ? props.onRenderItem(props.node, props.level)
-          : <div>{props.node.title}</div>}
+        {onRenderItem 
+          ? onRenderItem(node, level)
+          : <div>{node.title}</div>}
       </li>}
       {
-        props.childNodes?.map(cnode => (
+        childNodes?.map(cnode => (
           <TreeViewItem
-            className={props.className}
+            className={className}
             key={cnode.id}
             node={cnode}
-            childNodes={findChildren(props.treeData || [], cnode.id)}
-            level={props.level + 1}
-            treeData={props.treeData}
-            onCompleteMove={props.onCompleteMove}
-            draggedNodeId={props.draggedNodeId}
-            targetNodeId={props.targetNodeId}
-            setDraggedNodeId={props.setDraggedNodeId}
-            setTargetNodeId={props.setTargetNodeId}
-            selectedItems={props.selectedItems}
-            onSelected={props.onSelected}
-            onRenderItem={props.onRenderItem}
+            childNodes={findChildren(treeData || [], cnode.id)}
+            level={level + 1}
+            treeData={treeData}
+            onCompleteMove={onCompleteMove}
+            draggedNodeId={draggedNodeId}
+            targetNodeId={targetNodeId}
+            setDraggedNodeId={setDraggedNodeId}
+            setTargetNodeId={setTargetNodeId}
+            selectedItems={selectedItems}
+            onSelected={onSelected}
+            onRenderItem={onRenderItem}
           />
         ))
       }
-      {(props.node === null || props.node.canHaveChildren
+      {(node === null || node.canHaveChildren
         && isDraggingOverBranch)
         && <li
           className={clsx('draggable-tree-item draggable-tree-item__placeholder',
             isTargetNode(thisPlaceholder) && "draggable-tree-item__target",
-            props.className)}
-          style={{marginLeft: calculateLevelPadding(props.level+1)}}
+            className)}
+          style={{marginLeft: calculateLevelPadding(level+1)}}
           draggable={false}
           onDragOver={handleDragOver(thisPlaceholder)}
           onDragLeave={handleDragLeave}

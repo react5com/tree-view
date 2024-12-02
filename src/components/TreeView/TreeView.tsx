@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import './TreeView.css'
 import { Fragment } from 'react/jsx-runtime';
-import { useEffect, useMemo, useState, ReactNode } from 'react';
+import { useEffect, useMemo, useState, ReactNode, useRef } from 'react';
 import { findChildren, findItemById, IdType, repositionItems, TreeNode } from '../logic';
 import { TreeViewItem } from '../TreeViewItem';
 
@@ -14,32 +14,38 @@ export interface ITreeViewProps<T = unknown> {
   onSelectionChanged?: (selectedItems: TreeNode<T>[]) => void;
 }
 
-export const TreeView = <T=unknown>(props: ITreeViewProps<T>) => {
-  const [treeData, setTreeData] = useState(props.items || [])
+export const TreeView = <T=unknown>({className, itemClassName, items, onRenderItem,
+  onPositionsUpdated, onSelectionChanged}: ITreeViewProps<T>) => {
+  const [treeData, setTreeData] = useState(items || [])
   useEffect(() => {
-    if(props.items)
-      setTreeData(props.items);
-  }, [props.items]);  
+    if(items)
+      setTreeData(items);
+  }, [items]);  
   
   const rootNodes = useMemo(() => treeData ? findChildren(treeData, null) : [], [treeData]);
   
-  const [draggedNodeId, setDraggedNodeId] = useState<IdType|null>(null);
-  const [targetNodeId, setTargetNodeId] = useState<IdType|null>(null);
+  const [draggedNodeId, setDraggedNodeId] = useState<IdType | null>(null);
+  const [targetNodeId, setTargetNodeId] = useState<IdType | null>(null);
 
-  const [selectedItems, setSelectedItems] = useState<IdType[]>([]);
+  const [selectedItems, setSelectedItems] = useState<IdType[] | null>(null);
+  const previousSelectedItems = useRef<IdType[] | null>(null);
+
   const handleCheckboxChange = (id: IdType) => {
     setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.includes(id)
+      prevSelectedItems?.includes(id)
         ? prevSelectedItems.filter((itemId) => itemId !== id)
-        : [...prevSelectedItems, id]
+        : [...(prevSelectedItems || []), id]
     );
   };
-  const { onSelectionChanged } = props;
   useEffect(() => {
+    if (previousSelectedItems.current === selectedItems) {
+      return;
+    }
+    previousSelectedItems.current = selectedItems;
     if(onSelectionChanged) {
       const items = selectedItems 
         && selectedItems.map(id => findItemById(treeData, id)).filter(item => item != null);
-      onSelectionChanged(items);
+        items !== null && onSelectionChanged(items);
     }
   }, [onSelectionChanged, treeData, selectedItems]);
 
@@ -48,24 +54,24 @@ export const TreeView = <T=unknown>(props: ITreeViewProps<T>) => {
     if(!draggedNode) return;
     const {updatedData, changedItems} = repositionItems(treeData, draggedNode, targetNode || null)
     setTreeData(updatedData);
-    if(props.onPositionsUpdated && changedItems) props.onPositionsUpdated(changedItems);
+    if(onPositionsUpdated && changedItems) onPositionsUpdated(changedItems);
   }
   return (
     <Fragment>
-      <ul className={clsx("draggable-tree-view", props.className)}>
+      <ul className={clsx("draggable-tree-view", className)}>
         <TreeViewItem
-          className={props.itemClassName}
+          className={itemClassName}
           draggedNodeId={draggedNodeId}
           targetNodeId={targetNodeId}
           setDraggedNodeId={setDraggedNodeId}
           setTargetNodeId={setTargetNodeId}
-          selectedItems={selectedItems}
+          selectedItems={selectedItems || []}
           node={null}
           childNodes={rootNodes}
           treeData={treeData}
           onCompleteMove={completeMove}
           level={-1}
-          onRenderItem={props.onRenderItem}
+          onRenderItem={onRenderItem}
           onSelected={handleCheckboxChange}
         />
       </ul>

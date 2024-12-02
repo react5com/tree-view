@@ -20,6 +20,7 @@
   "style": "dist/style.css",
   "scripts": {
     "dev": "vite",
+    "dev-watch": "vite build --watch",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
