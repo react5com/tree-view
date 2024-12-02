@@ -15,6 +15,14 @@ const treeDataSample: TreeNode[] = [
 function App() {
   const [selectedItems, setSelectedItems] = useState<TreeNode[] | null>(null);
   console.log("selectedItems", selectedItems);
+  const handlePositionsUpdated = (updatedNodes: TreeNode[]) => {
+    const changedPositions = updatedNodes.map(treeNode => ({
+      id: treeNode.id,
+      position: treeNode.position,
+      circuitId: treeNode.parentId
+    }));
+    console.log(changedPositions)
+  }
   return (
     <>
       <h1>Test draggable tree</h1>
@@ -24,6 +32,7 @@ function App() {
         onRenderItem={
           (node) => <div className='tree-view-vcenter'>{node.title}</div>
         }
+        onPositionsUpdated={handlePositionsUpdated}
       />
     </>
   )

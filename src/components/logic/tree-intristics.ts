@@ -8,10 +8,12 @@ export function isNullOrUndefined(v: unknown) {
   return v === null || typeof(v) === "undefined";
 }
 export function findChildren<T>(treeData: TreeNode<T>[], parentId?: IdType | null) {
-  return treeData.filter((n) => {
-    return (isNullOrUndefined(parentId) 
-      && isNullOrUndefined(n.parentId)) || (n.parentId === parentId)
-  });
+  return treeData
+    .filter((n) => {
+      return (isNullOrUndefined(parentId) 
+        && isNullOrUndefined(n.parentId)) || (n.parentId === parentId)
+    })
+    .sort((a, b) => (a.position || 0) - (b.position || 0));
 }
 function getMaxPosition<T>(treeData: TreeNode<T>[], parentId?: IdType | null) {
   return Math.max(
@@ -19,8 +21,8 @@ function getMaxPosition<T>(treeData: TreeNode<T>[], parentId?: IdType | null) {
     0
   );
 }
-function getAllExcept<T>(treeData: TreeNode<T>[], item: TreeNode<T>) {
-  return treeData.filter(node => node.id !== item.id);
+function getAllExcept<T>(treeData: TreeNode<T>[], id: IdType) {
+  return treeData.filter(node => node.id !== id);
 }
 export function repositionItems<T>(treeData: TreeNode<T>[], 
   item: TreeNode<T>, itemTo: TreeNode<T> | null): 
@@ -32,13 +34,14 @@ export function repositionItems<T>(treeData: TreeNode<T>[],
   if(parent && (!parent.canHaveChildren)) return { updatedData: treeData };
   if(item.id === itemTo?.parentId) return { updatedData: treeData };
   
-  let updatedData = getAllExcept(treeData, item);
+  let updatedData = getAllExcept(treeData.map(t => ({ ...t })), item.id);
+  const itemCopy = {...item};
 
   if (!itemTo || itemTo.position === undefined) {
     const maxLayerPosition = getMaxPosition(updatedData, itemTo?.parentId);
-    item.position = maxLayerPosition + 1;
-    item.parentId = itemTo?.parentId;
-    updatedData.push(item);
+    itemCopy.position = maxLayerPosition + 1;
+    itemCopy.parentId = itemTo?.parentId;
+    updatedData.push(itemCopy);
   } else {
     // Recalculate positions for the sibling group (same parentId)
     const siblings = findChildren(updatedData, itemTo.parentId)
@@ -46,11 +49,11 @@ export function repositionItems<T>(treeData: TreeNode<T>[],
     const itemToIndex = siblings.findIndex(node => node.id === itemTo.id);
     
     // Place the item before itemTo
-    item.position = itemTo.position;
-    item.parentId = itemTo.parentId;
+    itemCopy.position = itemTo.position;
+    itemCopy.parentId = itemTo.parentId;
 
     // Insert item in the correct spot and adjust subsequent positions
-    siblings.splice(itemToIndex, 0, item);
+    siblings.splice(itemToIndex, 0, itemCopy);
 
     // Re-assign positions for the reordered siblings
     siblings.forEach((node, index) => {
