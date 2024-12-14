@@ -88,3 +88,18 @@ export function findChangedItems<T>(treeData: TreeNode<T>[], updatedTreeData: Tr
   }
   return changedItems;
 }
+
+function hasDuplicateIds(items: { id: IdType }[]): string | null {
+  const seen = new Set<IdType>();
+  for (const item of items) {
+      if (seen.has(item.id)) {
+          return `Duplicate id found: ${item.id}`;
+      }
+      seen.add(item.id);
+  }
+  return null;
+}
+export function validateItems(items: { id: IdType }[]): string | null {
+  const error = hasDuplicateIds(items);
+  return error;
+}

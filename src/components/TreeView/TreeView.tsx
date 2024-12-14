@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import './TreeView.css'
 import { Fragment } from 'react/jsx-runtime';
 import { useEffect, useMemo, useState, ReactNode, useRef } from 'react';
-import { findChildren, findItemById, IdType, repositionItems, TreeNode } from '../logic';
+import { findChildren, findItemById, IdType, repositionItems, TreeNode, validateItems } from '../logic';
 import { TreeViewItem } from '../TreeViewItem';
 
 export interface ITreeViewProps<T = unknown> {
@@ -18,8 +18,14 @@ export const TreeView = <T=unknown>({className, itemClassName, items, onRenderIt
   onPositionsUpdated, onSelectionChanged}: ITreeViewProps<T>) => {
   const [treeData, setTreeData] = useState(items || [])
   useEffect(() => {
-    if(items)
+    if(items) {
+      const error = validateItems(items);
+      if (error) {
+          console.error(error);
+          throw new Error(error);
+      }
       setTreeData(items);
+    }
   }, [items]);  
   
   const rootNodes = useMemo(() => treeData ? findChildren(treeData, null) : [], [treeData]);
