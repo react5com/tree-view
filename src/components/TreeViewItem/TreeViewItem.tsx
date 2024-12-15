@@ -14,6 +14,7 @@ interface ITreeViewItemProps<T = unknown> {
   setDraggedNodeId: (nodeId: IdType | null) => void;
   setTargetNodeId: (nodeId: IdType | null) => void;
   level: number;
+  readonly?: boolean;
   onCompleteMove: (node?: TreeNode<T>) => void;
   onRenderItem?: (node: TreeNode<T>, level: number) => ReactNode;
   onCalculateLevelPadding?: (level: number) => string;
@@ -24,7 +25,7 @@ interface ITreeViewItemProps<T = unknown> {
 export const TreeViewItem = <T=unknown,>({node, onCalculateLevelPadding,
   draggedNodeId, targetNodeId, setDraggedNodeId, setTargetNodeId,
   onCompleteMove, onSelected, selectedItems, className, level,
-  onRenderItem, treeData, childNodes}: ITreeViewItemProps<T>) => {
+  onRenderItem, treeData, childNodes, readonly}: ITreeViewItemProps<T>) => {
   const [isDraggingOverBranch, setIsDraggingOverBranch] = useState(false);
   const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -116,14 +117,14 @@ export const TreeViewItem = <T=unknown,>({node, onCalculateLevelPadding,
         className={clsx('draggable-tree-item', isDraggedNode(node) && "draggable-tree-item__dragging",
           isTargetNode(node) && "draggable-tree-item__target", className)}
         style={{marginLeft: calculateLevelPadding(level)}}
-        draggable
+        draggable={!readonly}
         onDragStart={handleDragStart(node)}
         onDragOver={handleDragOver(node)}
         onDragEnd={handleDragEnd}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop(node)}
       >
-        {onSelected 
+        {(onSelected && !readonly)
           && <CheckBox
                 id={`check${node.id}`}
                 onChange={handleSelectedChange(node.id)}
@@ -141,6 +142,7 @@ export const TreeViewItem = <T=unknown,>({node, onCalculateLevelPadding,
             node={cnode}
             childNodes={findChildren(treeData || [], cnode.id)}
             level={level + 1}
+            readonly={readonly}
             treeData={treeData}
             onCompleteMove={onCompleteMove}
             draggedNodeId={draggedNodeId}

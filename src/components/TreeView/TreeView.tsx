@@ -9,13 +9,14 @@ export interface ITreeViewProps<T = unknown> {
   className?: string;
   itemClassName?: string;
   items?: TreeNode<T>[];
+  readonly?: boolean;
   onRenderItem?: (node: TreeNode<T>, level: number) => ReactNode;
   onPositionsUpdated?: (changedItems: TreeNode<T>[]) => void;
   onSelectionChanged?: (selectedItems: TreeNode<T>[]) => void;
 }
 
 export const TreeView = <T=unknown>({className, itemClassName, items, onRenderItem,
-  onPositionsUpdated, onSelectionChanged}: ITreeViewProps<T>) => {
+  onPositionsUpdated, onSelectionChanged, readonly = false}: ITreeViewProps<T>) => {
   const [treeData, setTreeData] = useState(items || [])
   useEffect(() => {
     if(items) {
@@ -72,6 +73,7 @@ export const TreeView = <T=unknown>({className, itemClassName, items, onRenderIt
           setDraggedNodeId={setDraggedNodeId}
           setTargetNodeId={setTargetNodeId}
           selectedItems={selectedItems || []}
+          readonly={readonly}
           node={null}
           childNodes={rootNodes}
           treeData={treeData}
