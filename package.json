@@ -1,7 +1,7 @@
 {
   "name": "draggable-tree-view",
   "private": false,
-  "version": "0.1.23",
+  "version": "0.1.24",
   "type": "module",
   "description": "A simple and customizable tree view for React with drag-n-drop for repositioning.",
   "author": {
@@ -13,9 +13,9 @@
     "url": "git+https://github.com/alfed7/draggable-tree-view.git"
   },
   "files": ["dist"],
-  "main": "dist/draggable-tree-view.umd.js",
+  "main": "dist/draggable-tree-view.umd.cjs",
   "module": "dist/draggable-tree-view.js",
-  "browser": "dist/draggable-tree-view.umd.js",
+  "browser": "dist/draggable-tree-view.umd.cjs",
   "types": "dist/types/draggable-tree-view.d.ts",
   "style": "dist/style.css",
   "scripts": {
@@ -28,9 +28,9 @@
     "test-watch": "jest --watch"
   },
   "peerDependencies": {
-    "clsx": "^2.1.1",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "clsx": ">=2",
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "devDependencies": {
     "clsx": "^2.1.1",
