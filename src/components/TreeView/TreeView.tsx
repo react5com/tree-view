@@ -52,7 +52,7 @@ export const TreeView = <T=unknown>({className, itemClassName, items, onRenderIt
     if(onSelectionChanged) {
       const items = selectedItems 
         && selectedItems.map(id => findItemById(treeData, id)).filter(item => item != null);
-        items !== null && onSelectionChanged(items);
+      if(items !== null) onSelectionChanged(items);
     }
   }, [onSelectionChanged, treeData, selectedItems]);
 
