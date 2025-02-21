@@ -9,7 +9,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/components/index.tsx"),
       name: "DraggableTreeView",
-      fileName: "draggable-tree-view",
+      fileName: "tree-view",
     },
     rollupOptions: {
       external: ["react", "react-dom", 'react/jsx-runtime'],

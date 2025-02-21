@@ -6,18 +6,18 @@ A simple and customizable Tree View React component. It supports items reorderin
 
 ```bash
 # Using Yarn
-npm i draggable-tree-view --save
+npm i @react5/tree-view --save
 ```
 or
 ```
 # Using Npm
-yarn add draggable-tree-view
+yarn add @react5/tree-view
 ```
 
 ## Sample
 ```
-import { TreeView, TreeNode } from "draggable-tree-view"
-import 'draggable-tree-view/dist/style.css';
+import { TreeView, TreeNode } from "@react5/tree-view"
+import '@react5/tree-view/dist/style.css';
 
 const treeDataSample: TreeNode[] = [
   new TreeNode({ id: 1, title: 'Root Item 1', position: 1, canHaveParent: false }),
@@ -45,4 +45,4 @@ This project is licensed under the MIT License. For more information, see the [L
 
 ## Support
 
-For support and bug reports, please [open an issue](https://github.com/alfed7/draggable-tree-view/issues) on GitHub.
+For support and bug reports, please [open an issue](https://github.com/react5com/tree-view/issues) on GitHub.
