@@ -25,8 +25,8 @@ export const TreeView = <T=unknown>({className, itemClassName, items, onRenderIt
           console.error(error);
           throw new Error(error);
       }
-      setTreeData(items);
     }
+    setTreeData(items || []);
   }, [items]);  
   
   const rootNodes = useMemo(() => treeData ? findChildren(treeData, null) : [], [treeData]);
